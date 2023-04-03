@@ -1,0 +1,54 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Insert New House</title>
+	<script>
+		function validateFields(){
+			let textFields = [document.querySelector("input[name = 'address']"), document.querySelector("input[name = 'city']"), document.querySelector("input[name = 'state']"), document.querySelector("input[name = 'zipCode']"), document.querySelector("input[name = 'price']")];
+			let errorMessage = "";
+			for(let i = 0; i < textFields.length; i++){
+				textFields[i].style.backgroundColor = "#FFFFFF";
+			}
+			for(let i = 0; i < 3; i++){
+				if(textFields[i].value == ""){
+					if(errorMessage.length != 0){
+						errorMessage += ", ";
+					}
+					errorMessage += textFields[i].name + " field empty";
+					textFields[i].style.backgroundColor = "#E55D40";
+					event.preventDefault();
+				}
+			}
+			if(isNaN(textFields[3].value) || textFields[3].value.length != 5){
+				if(errorMessage.length != 0){
+					errorMessage += ", ";
+				}
+				errorMessage += "zip code must be a five digit integer";
+				textFields[3].style.backgroundColor = "#E55D40";
+				event.preventDefault();
+			}
+			if((textFields[4].value == "" || isNaN(textFields[4].value)) || parseFloat(textFields[4].value) < 0){
+				if(errorMessage.length != 0){
+					errorMessage += ", ";
+				}
+				errorMessage += "price must be a positive integer";
+				textFields[4].style.backgroundColor = "#E55D40";
+				event.preventDefault();
+			}
+			document.querySelector("span").innerHTML = errorMessage + "\n";
+		}
+	</script>
+</head>
+<body>
+	<form th:object="${newHouse}" th:action="@{/update/{id}(id=${newHouse.id})}" method=POST>
+		Address: <input name="address" size="20" th:field="*{address}"> <br />
+		City: <input name="city" size="10" th:field="*{city}"><br />
+		State: <input name="state" size="10" th:field="*{state}"><br />
+		Zip Code: <input name="zipCode" size="5" th:field="*{zipCode}"><br />
+		Price: $<input name="price" size="9" th:field="*{price}"><br />
+		<input name="submit" type="submit" value="submit" onclick="validateFields()"/>
+	</form>
+	<span></span>
+	<a href="viewAll">View all houses</a>
+</body>
+</html>
